@@ -1,0 +1,24 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sneg AR</title>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    model-viewer { width: 100vw; height: 100vh; background: #fff; }
+  </style>
+</head>
+<body>
+  <model-viewer
+    src="vr/sneg.glb"
+    ios-src="vr/sneg.usdz"
+    ar
+    ar-modes="scene-viewer quick-look webxr"
+    camera-controls
+    shadow-intensity="1"
+    alt="Sneg model">
+  </model-viewer>
+</body>
+</html>
