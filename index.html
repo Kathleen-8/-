@@ -1,23 +1,5 @@
-<!doctype html>
-<html lang="ru">
-<head>
-  <meta charset="utf-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sneg AR Animation</title>
-
-  <script type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
-
-  <style>
-    body { margin: 0; font-family: Arial, sans-serif; }
-    model-viewer { width: 100vw; height: 100vh; background: #ffffff; }
-  </style>
-</head>
-
-<body>
-
 <model-viewer
+  id="mv"
   src="vr/sneg_anim.glb"
   ios-src="vr/sneg.usdz"
   ar
@@ -25,27 +7,39 @@
   camera-controls
   autoplay
   shadow-intensity="1"
-  animation-name="11">
+  style="width: 100vw; height: 100vh; background: #fff;">
 </model-viewer>
 
+<div id="dbg" style="
+  position: fixed; left: 12px; bottom: 12px;
+  padding: 10px 12px; border-radius: 10px;
+  background: rgba(0,0,0,0.65); color: #fff;
+  font-family: Arial, sans-serif; font-size: 14px; z-index: 9999;">
+Загрузка...
+</div>
+
 <script>
-const viewer = document.querySelector("model-viewer");
+const viewer = document.getElementById('mv');
+const dbg = document.getElementById('dbg');
 
-viewer.addEventListener("load", () => {
+viewer.addEventListener('load', () => {
+  const anims = viewer.availableAnimations || [];
+  dbg.textContent = 'Animations: ' + (anims.length ? anims.join(', ') : 'НЕТ');
 
-  // старт первая анимация
-  viewer.animationName = "11";
+  // Если анимаций нет — в GLB они не экспортировались
+  if (anims.length === 0) return;
+
+  // Запустить первую
+  viewer.animationName = anims[0];
   viewer.play();
 
-  // через 3 сек плавно на вторую
-  setTimeout(() => {
-    viewer.animationCrossfadeDuration = 1000;
-    viewer.animationName = "22";
-    viewer.play();
-  }, 3000);
-
+  // Через 3 сек плавно перейти на вторую (если она есть)
+  if (anims.length >= 2) {
+    setTimeout(() => {
+      viewer.animationCrossfadeDuration = 1000;
+      viewer.animationName = anims[1];
+      viewer.play();
+    }, 3000);
+  }
 });
 </script>
-
-</body>
-</html>
