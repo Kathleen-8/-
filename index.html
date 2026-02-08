@@ -35,24 +35,10 @@
     const clips = ['11', '22'];
     let i = 0;
 
-    // Чтобы анимация гарантированно "перекручивалась" в 0 и мы могли поймать момент
-    mv.loop = true;
-
-    function setClip(name) {
+    function playOnce(name) {
+      mv.pause();
       mv.animationName = name;
       mv.currentTime = 0;
-      mv.play();
+      // ВАЖНО: запускаем РОВНО 1 повтор (не бесконечный loop)
+      mv.play({ repetitions: 1 });
     }
-
-    mv.addEventListener('load', () => {
-      i = 0;
-      setClip(clips[i]);
-
-      let last = 0;
-
-      function tick() {
-        const t = mv.currentTime;
-
-        // Если время анимации "перескочило назад" — значит клип начался заново
-        // (это и есть наш сигнал переключиться на следующий)
-        if (t + 0.02 < last && last > 0.15) {
