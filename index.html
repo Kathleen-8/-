@@ -3,58 +3,101 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>WebAR model-viewer</title>
 
-  <title>Animation Debug</title>
-
-  <script type="module"
-    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
-  </script>
+  <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    body { margin:0; font-family: Arial; }
-
-    #debug {
+    body { margin: 0; font-family: Arial, sans-serif; }
+    model-viewer { width: 100vw; height: 100vh; background: #fff; }
+    #hud{
       position: fixed;
       top: 10px;
       left: 10px;
-      background: black;
-      color: white;
-      padding: 10px;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.75);
+      color: #fff;
       border-radius: 10px;
-      z-index: 999;
-    }
-
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-      background: white;
+      z-index: 9999;
+      font-size: 14px;
+      line-height: 1.35;
+      white-space: pre-line;
     }
   </style>
 </head>
 
 <body>
 
-<div id="debug">Жду загрузку модели…</div>
+  <div id="hud">Загрузка…</div>
 
-<model-viewer
-  id="mv"
-  camera-controls
-  autoplay
-></model-viewer>
+  <model-viewer
+    id="mv"
+    camera-controls
+    touch-action="pan-y"
+    animation-crossfade-duration="800"
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+    alt="3D model"
+  ></model-viewer>
 
-<script>
-const mv = document.getElementById("mv");
-const dbg = document.getElementById("debug");
+  <script>
+    const mv = document.getElementById('mv');
+    const hud = document.getElementById('hud');
 
-// Анти-кэш GLB
-mv.src = "vr/sneg-a.glb?v=" + Date.now();
+    // анти-кэш для GLB (важно!)
+    mv.src = 'vr/sneg-a.glb?v=' + Date.now();
 
-mv.addEventListener("load", () => {
-  dbg.innerText =
-    "Анимации:\n" +
-    mv.availableAnimations.join("\n");
-});
-</script>
+    const A1 = '11';
+    const A2 = '22';
+
+    // сколько держим каждую анимацию (мс)
+    const T1 = 3000; // качание
+    const T2 = 2500; // прыжок (делаем подольше)
+
+    function show(text) {
+      hud.textContent = text;
+    }
+
+    function playClip(name) {
+      // делаем прыжок заметнее: замедляем 22
+      mv.timeScale = (name === A2) ? 0.5 : 1.0;
+
+      // жёсткий перезапуск клипа
+      mv.pause();
+      mv.animationName = name;
+      mv.currentTime = 0;
+      mv.play();
+
+      show(
+        'Сейчас: ' + name + '\n' +
+        'timeScale: ' + mv.timeScale + '\n' +
+        'Доступно: ' + (mv.availableAnimations ? mv.availableAnimations.join(', ') : '…')
+      );
+    }
+
+    mv.addEventListener('load', () => {
+      show('Загружено.\nДоступно: ' + mv.availableAnimations.join(', '));
+
+      // старт
+      playClip(A1);
+
+      // цикл 11 -> 22 -> 11 -> ...
+      function loop() {
+        setTimeout(() => {
+          playClip(A2);
+
+          setTimeout(() => {
+            playClip(A1);
+            loop();
+          }, T2);
+
+        }, T1);
+      }
+
+      loop();
+    });
+  </script>
 
 </body>
 </html>
