@@ -1,27 +1,14 @@
-<model-viewer
-  src="vr/sneg-a.glb"
-  ios-src="vr/sneg.usdz"
-  ar
-  ar-modes="scene-viewer quick-look webxr"
-  camera-controls
-  autoplay
-  animation-name="11Action"
-  style="width:100vw;height:100vh;">
-</model-viewer>
-
 <script>
-const viewer = document.querySelector("model-viewer");
+  const viewer = document.querySelector('model-viewer');
 
-viewer.addEventListener("load", () => {
-
-  viewer.animationName = "11Action";
-  viewer.play();
-
-  setTimeout(() => {
-    viewer.animationCrossfadeDuration = 1000;
-    viewer.animationName = "22Action";
+  viewer.addEventListener('load', () => {
+    viewer.animationName = '11Action';
     viewer.play();
-  }, 3000);
 
-});
+    setTimeout(() => {
+      viewer.animationCrossfadeDuration = 1000;
+      viewer.animationName = '22Action';
+      viewer.play();
+    }, 3000);
+  });
 </script>
