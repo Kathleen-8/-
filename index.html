@@ -1,14 +1,61 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sneg AR Animation</title>
+
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
+
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background: white;
+    }
+
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: white;
+    }
+  </style>
+</head>
+
+<body>
+
+<model-viewer
+  id="mv"
+  src="vr/sneg-a.glb"
+  ios-src="vr/sneg.usdz"
+  ar
+  ar-modes="scene-viewer quick-look webxr"
+  camera-controls
+  autoplay
+  shadow-intensity="1"
+  animation-name="11Action">
+</model-viewer>
+
 <script>
-  const viewer = document.querySelector('model-viewer');
+const viewer = document.getElementById("mv");
 
-  viewer.addEventListener('load', () => {
-    viewer.animationName = '11Action';
+viewer.addEventListener("load", () => {
+
+  // Первая анимация
+  viewer.animationName = "11Action";
+  viewer.play();
+
+  // Через 3 сек плавный переход на вторую
+  setTimeout(() => {
+    viewer.animationCrossfadeDuration = 1000;
+    viewer.animationName = "22Action";
     viewer.play();
+  }, 3000);
 
-    setTimeout(() => {
-      viewer.animationCrossfadeDuration = 1000;
-      viewer.animationName = '22Action';
-      viewer.play();
-    }, 3000);
-  });
+});
 </script>
+
+</body>
+</html>
