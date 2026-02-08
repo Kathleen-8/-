@@ -9,11 +9,7 @@
 
   <style>
     body { margin: 0; }
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-      background: #ffffff;
-    }
+    model-viewer { width: 100vw; height: 100vh; background: #fff; }
   </style>
 </head>
 
@@ -21,7 +17,7 @@
 
   <model-viewer
     id="mv"
-    src="vr/sneg-a.glb"
+    src="vr/sneg-a.glb?v=20260208"
     camera-controls
     ar
     ar-modes="webxr scene-viewer quick-look"
@@ -31,11 +27,11 @@
   <script>
     const mv = document.getElementById('mv');
 
-    // Имена анимаций (как в model-viewer editor)
+    // То, что мы ожидаем по твоим старым скринам:
     const A1 = '11';
     const A2 = '22';
 
-    // Сколько секунд показывать каждую (можешь менять)
+    // Время показа каждой анимации
     const T1 = 3000; // 11
     const T2 = 2000; // 22
 
@@ -44,25 +40,28 @@
       mv.animationName = name;
       mv.currentTime = 0;
       mv.play();
+      console.log('▶️ play:', name);
     }
 
     mv.addEventListener('load', () => {
-      // стартуем с 11
+      console.log('✅ model loaded');
+      console.log('🎬 availableAnimations =', mv.availableAnimations);
+
+      // старт
       playClip(A1);
 
-      // дальше циклим по таймерам
+      // цикл
       function loop() {
         setTimeout(() => {
           playClip(A2);
 
           setTimeout(() => {
             playClip(A1);
-            loop(); // повторяем круг
+            loop();
           }, T2);
 
         }, T1);
       }
-
       loop();
     });
   </script>
