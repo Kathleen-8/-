@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>WebAR model-viewer</title>
 
-  <!-- model-viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
@@ -27,3 +26,30 @@
     animation-crossfade-duration="1000"
     camera-controls
     ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+  ></model-viewer>
+
+  <script>
+    const mv = document.getElementById('mv');
+    const clips = ['11', '22'];
+    let i = 0;
+
+    function playClip(name) {
+      // отключаем зацикливание, чтобы срабатывало "окончание"
+      mv.loop = false;
+
+      // перезапуск
+      mv.pause();
+      mv.animationName = name;
+      mv.currentTime = 0;
+      mv.play();
+    }
+
+    mv.addEventListener('load', () => {
+      i = 0;
+      playClip(clips[i]);
+    });
+
+    // Событие: анимация дошла до конца
+    mv.addEventListe
