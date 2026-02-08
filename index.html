@@ -22,8 +22,41 @@
   <model-viewer
     id="mv"
     src="vr/sneg-a.glb"
-    camera-controls
-    touch-action="pan-y"
-    autoplay
     animation-name="11"
     animation-crossfade-duration="1000"
+    camera-controls
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+  ></model-viewer>
+
+  <script>
+    const mv = document.getElementById('mv');
+    const clips = ['11', '22'];
+    let i = 0;
+
+    function playClip(name) {
+      // отключаем зацикливание, чтобы срабатывало "окончание"
+      mv.loop = false;
+
+      // перезапуск
+      mv.pause();
+      mv.animationName = name;
+      mv.currentTime = 0;
+      mv.play();
+    }
+
+    mv.addEventListener('load', () => {
+      i = 0;
+      playClip(clips[i]);
+    });
+
+    // Событие: анимация дошла до конца
+    mv.addEventListener('finished', () => {
+      i = (i + 1) % clips.length;
+      playClip(clips[i]);
+    });
+  </script>
+
+</body>
+</html>
