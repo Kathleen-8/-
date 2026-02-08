@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Cache test</title>
+  <title>WebAR model-viewer</title>
 
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
@@ -30,17 +30,37 @@
   <div id="stamp">Загрузка…</div>
 
   <model-viewer
-    src="vr/sneg-a.glb"
-    autoplay
+    id="mv"
     camera-controls
+    touch-action="pan-y"
+    autoplay
+    animation-name="11"
+    animation-crossfade-duration="1000"
     ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+    alt="3D model"
   ></model-viewer>
 
   <script>
+    // 1) Плашка — чтобы видеть, что страница обновилась
     const stamp = document.getElementById('stamp');
     const now = new Date();
     stamp.textContent = 'Обновлено: ' + now.toLocaleString();
-    console.log('PAGE BUILD:', now.toISOString());
+
+    // 2) Анти-кэш для GLB:
+    //    Каждый раз новая ссылка => браузер обязан заново скачать модель
+    const mv = document.getElementById('mv');
+    const glbUrl = 'vr/sneg-a.glb?v=' + Date.now();
+    mv.src = glbUrl;
+
+    // 3) Переключение анимаций как в примере с сайта
+    const SWITCH_EVERY = 3000; // 3 секунды
+    mv.addEventListener('load', () => {
+      self.setInterval(() => {
+        mv.animationName = (mv.animationName === '11') ? '22' : '11';
+      }, SWITCH_EVERY);
+    });
   </script>
 
 </body>
