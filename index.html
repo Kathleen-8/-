@@ -9,7 +9,11 @@
 
   <style>
     body { margin: 0; }
-    model-viewer { width: 100vw; height: 100vh; background: #fff; }
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
+    }
   </style>
 </head>
 
@@ -17,54 +21,9 @@
 
   <model-viewer
     id="mv"
-    src="vr/sneg-a.glb?v=20260208"
+    src="vr/sneg-a.glb"
     camera-controls
-    ar
-    ar-modes="webxr scene-viewer quick-look"
+    touch-action="pan-y"
+    autoplay
+    animation-name="11"
     animation-crossfade-duration="1000"
-  ></model-viewer>
-
-  <script>
-    const mv = document.getElementById('mv');
-
-    // То, что мы ожидаем по твоим старым скринам:
-    const A1 = '11';
-    const A2 = '22';
-
-    // Время показа каждой анимации
-    const T1 = 3000; // 11
-    const T2 = 2000; // 22
-
-    function playClip(name) {
-      mv.pause();
-      mv.animationName = name;
-      mv.currentTime = 0;
-      mv.play();
-      console.log('▶️ play:', name);
-    }
-
-    mv.addEventListener('load', () => {
-      console.log('✅ model loaded');
-      console.log('🎬 availableAnimations =', mv.availableAnimations);
-
-      // старт
-      playClip(A1);
-
-      // цикл
-      function loop() {
-        setTimeout(() => {
-          playClip(A2);
-
-          setTimeout(() => {
-            playClip(A1);
-            loop();
-          }, T2);
-
-        }, T1);
-      }
-      loop();
-    });
-  </script>
-
-</body>
-</html>
