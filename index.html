@@ -3,59 +3,44 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>WebAR model-viewer</title>
+  <title>Cache test</title>
 
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    body { margin: 0; }
-    model-viewer {
-      width: 100vw;
-      height: 100vh;
-      background: #ffffff;
+    body { margin: 0; font-family: Arial, sans-serif; }
+    #stamp {
+      position: fixed;
+      top: 10px;
+      left: 10px;
+      padding: 10px 12px;
+      background: rgba(0,0,0,0.75);
+      color: white;
+      border-radius: 10px;
+      z-index: 9999;
+      font-size: 14px;
+      line-height: 1.3;
     }
+    model-viewer { width: 100vw; height: 100vh; background: #fff; }
   </style>
 </head>
 
 <body>
 
+  <div id="stamp">Загрузка…</div>
+
   <model-viewer
-    id="mv"
     src="vr/sneg-a.glb"
-    animation-name="11"
-    animation-crossfade-duration="1000"
+    autoplay
     camera-controls
     ar
-    ar-modes="webxr scene-viewer quick-look"
-    shadow-intensity="1"
   ></model-viewer>
 
   <script>
-    const mv = document.getElementById('mv');
-    const clips = ['11', '22'];
-    let i = 0;
-
-    function playClip(name) {
-      // отключаем зацикливание, чтобы срабатывало "окончание"
-      mv.loop = false;
-
-      // перезапуск
-      mv.pause();
-      mv.animationName = name;
-      mv.currentTime = 0;
-      mv.play();
-    }
-
-    mv.addEventListener('load', () => {
-      i = 0;
-      playClip(clips[i]);
-    });
-
-    // Событие: анимация дошла до конца
-    mv.addEventListener('finished', () => {
-      i = (i + 1) % clips.length;
-      playClip(clips[i]);
-    });
+    const stamp = document.getElementById('stamp');
+    const now = new Date();
+    stamp.textContent = 'Обновлено: ' + now.toLocaleString();
+    console.log('PAGE BUILD:', now.toISOString());
   </script>
 
 </body>
