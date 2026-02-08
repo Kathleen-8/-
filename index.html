@@ -3,84 +3,54 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>Sneg Animation</title>
+  <title>WebAR model-viewer</title>
 
+  <!-- Подключаем model-viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
 
   <style>
-    body { margin: 0; font-family: Arial, sans-serif; background: #fff; }
-    model-viewer { width: 100vw; height: 100vh; background: #fff; }
-    .ui {
-      position: fixed; left: 12px; top: 12px; z-index: 9999;
-      display: flex; gap: 8px; flex-wrap: wrap;
-    }
-    button {
-      padding: 10px 12px; border: 0; border-radius: 10px;
-      background: #111; color: #fff; font-size: 14px;
-    }
-    .status{
-      position: fixed; left: 12px; bottom: 12px; z-index: 9999;
-      background: rgba(0,0,0,0.65); color: #fff;
-      padding: 10px 12px; border-radius: 10px;
-      max-width: calc(100vw - 24px);
+    body { margin: 0; }
+    model-viewer {
+      width: 100vw;
+      height: 100vh;
+      background: #ffffff;
     }
   </style>
 </head>
 
 <body>
 
-<div class="ui">
-  <button id="btn1">Играть 11Action</button>
-  <button id="btn2">Играть 22Action</button>
-  <button id="btnAuto">Авто: 11 → 22</button>
-</div>
+  <model-viewer
+    id="mv"
+    src="vr/sneg-a.glb"
+    autoplay
+    animation-name="11"
+    animation-crossfade-duration="1000"
+    camera-controls
+    ar
+    ar-modes="webxr scene-viewer quick-look"
+    shadow-intensity="1"
+  >
+  </model-viewer>
 
-<model-viewer
-  id="mv"
-  src="vr/sneg-a.glb"
-  ios-src="vr/sneg.usdz"
-  ar
-  ar-modes="scene-viewer quick-look webxr"
-  camera-controls
-  autoplay
-  animation-name="11Action"
-  shadow-intensity="1">
-</model-viewer>
+  <script>
+    const mv = document.getElementById('mv');
 
-<div id="status" class="status">Загрузка…</div>
+    // Ждём, пока модель точно загрузится
+    mv.addEventListener('load', () => {
 
-<script>
-const viewer = document.getElementById('mv');
-const statusEl = document.getElementById('status');
+      // 1) Стартуем первую анимацию (11)
+      mv.animationName = '11';
+      mv.play();
 
-function setStatus(t){ statusEl.textContent = t; }
+      // 2) Через 3 секунды переключаемся на вторую (22)
+      setTimeout(() => {
+        mv.animationName = '22'; // model-viewer сам сделает crossfade
+        mv.play();
+      }, 3000);
 
-function play(name){
-  viewer.animationName = name;
-  viewer.play();
-  setStatus('Сейчас: ' + name);
-}
-
-viewer.addEventListener('load', () => {
-  // Покажем, какие анимации реально есть в файле
-  const anims = viewer.availableAnimations || [];
-  setStatus('В файле анимации: ' + (anims.length ? anims.join(', ') : 'НЕТ'));
-
-  // Стартуем 11Action
-  play('11Action');
-});
-
-document.getElementById('btn1').onclick = () => play('11Action');
-document.getElementById('btn2').onclick = () => play('22Action');
-
-document.getElementById('btnAuto').onclick = () => {
-  play('11Action');
-  setTimeout(() => {
-    viewer.animationCrossfadeDuration = 1000;
-    play('22Action');
-  }, 3000);
-};
-</script>
+    });
+  </script>
 
 </body>
 </html>
