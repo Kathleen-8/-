@@ -1,22 +1,51 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sneg AR Animation</title>
+
+  <script type="module"
+    src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js">
+  </script>
+
+  <style>
+    body { margin: 0; font-family: Arial, sans-serif; }
+    model-viewer { width: 100vw; height: 100vh; background: #ffffff; }
+  </style>
+</head>
+
+<body>
+
+<model-viewer
+  src="vr/sneg_anim.glb"
+  ios-src="vr/sneg.usdz"
+  ar
+  ar-modes="scene-viewer quick-look webxr"
+  camera-controls
+  autoplay
+  shadow-intensity="1"
+  animation-name="11">
+</model-viewer>
+
 <script>
 const viewer = document.querySelector("model-viewer");
 
 viewer.addEventListener("load", () => {
-  // 1) Wiggle
+
+  // старт первая анимация
   viewer.animationName = "11";
   viewer.play();
 
-  // 2) Плавно на Jump
+  // через 3 сек плавно на вторую
   setTimeout(() => {
     viewer.animationCrossfadeDuration = 1000;
     viewer.animationName = "22";
     viewer.play();
-
-    // 3) Остановить Jump через ~1.2 секунды (под один прыжок)
-    setTimeout(() => {
-      viewer.pause();
-    }, 1200);
-
   }, 3000);
+
 });
 </script>
+
+</body>
+</html>
