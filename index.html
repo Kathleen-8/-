@@ -35,12 +35,10 @@
     const clips = ['11', '22'];
     let i = 0;
 
-    function playClip(name) {
-      // отключаем зацикливание, чтобы срабатывало "окончание"
-      mv.loop = false;
+    // Чтобы анимация гарантированно "перекручивалась" в 0 и мы могли поймать момент
+    mv.loop = true;
 
-      // перезапуск
-      mv.pause();
+    function setClip(name) {
       mv.animationName = name;
       mv.currentTime = 0;
       mv.play();
@@ -48,8 +46,13 @@
 
     mv.addEventListener('load', () => {
       i = 0;
-      playClip(clips[i]);
-    });
+      setClip(clips[i]);
 
-    // Событие: анимация дошла до конца
-    mv.addEventListe
+      let last = 0;
+
+      function tick() {
+        const t = mv.currentTime;
+
+        // Если время анимации "перескочило назад" — значит клип начался заново
+        // (это и есть наш сигнал переключиться на следующий)
+        if (t + 0.02 < last && last > 0.15) {
